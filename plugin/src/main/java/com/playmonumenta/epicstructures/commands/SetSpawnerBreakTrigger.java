@@ -2,7 +2,7 @@ package com.playmonumenta.epicstructures.commands;
 
 import java.util.LinkedHashMap;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 import com.playmonumenta.epicstructures.managers.SpawnerBreakTrigger;
 
 import org.bukkit.ChatColor;
@@ -16,7 +16,7 @@ import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 
 public class SetSpawnerBreakTrigger {
-	public static void register(Plugin plugin) {
+	public static void register(StructurePlugin plugin) {
 		final String command = "setspawnerbreaktrigger";
 		final CommandPermission perms = CommandPermission.fromString("epicstructures");
 
@@ -43,7 +43,7 @@ public class SetSpawnerBreakTrigger {
 			.register();
 	}
 
-	private static void setTrigger(CommandSender sender, Plugin plugin, String label, int spawnerCount, String questComponentStr) {
+	private static void setTrigger(CommandSender sender, StructurePlugin plugin, String label, int spawnerCount, String questComponentStr) {
 		if (plugin.mRespawnManager == null) {
 			return;
 		}

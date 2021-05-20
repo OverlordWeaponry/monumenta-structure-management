@@ -2,7 +2,7 @@ package com.playmonumenta.epicstructures.commands;
 
 import java.util.LinkedHashMap;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 import com.playmonumenta.epicstructures.utils.CommandUtils;
 
 import org.bukkit.ChatColor;
@@ -20,7 +20,7 @@ import dev.jorel.commandapi.arguments.TextArgument;
 import dev.jorel.commandapi.exceptions.WrapperCommandSyntaxException;
 
 public class AddRespawningStructure {
-	public static void register(Plugin plugin) {
+	public static void register(StructurePlugin plugin) {
 		final String command = "addrespawningstructure";
 		final CommandPermission perms = CommandPermission.fromString("epicstructures");
 
@@ -42,7 +42,7 @@ public class AddRespawningStructure {
 			.register();
 	}
 
-	public static void add(CommandSender sender, Plugin plugin, String label, String path, Location loc, int extraRadius, int respawnTime, String name) throws WrapperCommandSyntaxException {
+	public static void add(CommandSender sender, StructurePlugin plugin, String label, String path, Location loc, int extraRadius, int respawnTime, String name) throws WrapperCommandSyntaxException {
 		CommandUtils.getAndValidateSchematicPath(plugin, path, true);
 
 		try {

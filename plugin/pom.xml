@@ -53,7 +53,7 @@
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <version>1.16.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -87,8 +87,8 @@
 
         <dependency>
             <groupId>dev.jorel</groupId>
-            <artifactId>commandapi-core</artifactId>
-            <version>4.3</version>
+            <artifactId>commandapi</artifactId>
+            <version>3.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -102,13 +102,13 @@
         <dependency>
             <groupId>com.playmonumenta</groupId>
             <artifactId>scripted-quests</artifactId>
-            <version>[1.21,)</version>
+            <version>dev</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>EpicStructureManagement_1.15.2_${project.version}_${maven.build.timestamp}</finalName>
+        <finalName>EpicStructureManagement_1.15.2</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>

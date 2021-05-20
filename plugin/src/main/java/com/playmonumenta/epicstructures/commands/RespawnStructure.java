@@ -2,7 +2,7 @@ package com.playmonumenta.epicstructures.commands;
 
 import java.util.LinkedHashMap;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -14,7 +14,7 @@ import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 
 public class RespawnStructure {
-	public static void register(Plugin plugin) {
+	public static void register(StructurePlugin plugin) {
 		final String command = "respawnstructure";
 		final CommandPermission perms = CommandPermission.fromString("epicstructures");
 
@@ -40,7 +40,7 @@ public class RespawnStructure {
 			.register();
 	}
 
-	private static void respawn(CommandSender sender, Plugin plugin, String label, Integer ticksUntilRespawn) {
+	private static void respawn(CommandSender sender, StructurePlugin plugin, String label, Integer ticksUntilRespawn) {
 		if (plugin.mRespawnManager == null) {
 			return;
 		}

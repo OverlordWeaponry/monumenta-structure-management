@@ -2,7 +2,7 @@ package com.playmonumenta.epicstructures.commands;
 
 import java.util.LinkedHashMap;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -14,7 +14,7 @@ import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.arguments.TextArgument;
 
 public class SetPostRespawnCommand {
-	public static void register(Plugin plugin) {
+	public static void register(StructurePlugin plugin) {
 		final String command = "setpostrespawncommand";
 		final CommandPermission perms = CommandPermission.fromString("epicstructures");
 
@@ -40,7 +40,7 @@ public class SetPostRespawnCommand {
 			.register();
 	}
 
-	private static void setcommand(CommandSender sender, Plugin plugin, String label, String command) {
+	private static void setcommand(CommandSender sender, StructurePlugin plugin, String label, String command) {
 		if (plugin.mRespawnManager == null) {
 			return;
 		}

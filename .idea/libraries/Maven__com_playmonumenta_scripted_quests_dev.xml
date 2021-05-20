@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.playmonumenta:scripted-quests:dev">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/playmonumenta/scripted-quests/dev/scripted-quests-dev.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/playmonumenta/scripted-quests/dev/scripted-quests-dev-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/playmonumenta/scripted-quests/dev/scripted-quests-dev-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

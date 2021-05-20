@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.bergerkiller.bukkit:LightCleaner:1.15.2-v1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/bergerkiller/bukkit/LightCleaner/1.15.2-v1/LightCleaner-1.15.2-v1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/bergerkiller/bukkit/LightCleaner/1.15.2-v1/LightCleaner-1.15.2-v1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/bergerkiller/bukkit/LightCleaner/1.15.2-v1/LightCleaner-1.15.2-v1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

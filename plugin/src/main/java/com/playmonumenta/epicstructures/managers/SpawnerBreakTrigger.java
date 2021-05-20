@@ -3,11 +3,10 @@ package com.playmonumenta.epicstructures.managers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 import com.playmonumenta.scriptedquests.quests.components.QuestComponent;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -31,8 +30,8 @@ public class SpawnerBreakTrigger {
 	// sub-structures override that default. This would require a bit of restructuring...
 	//
 	// For now, all structures of the same label share this information
-	public static SpawnerBreakTrigger fromConfig(Plugin plugin,
-	                                             ConfigurationSection config) throws Exception {
+	public static SpawnerBreakTrigger fromConfig(StructurePlugin plugin,
+                                                 ConfigurationSection config) throws Exception {
 		if (!config.isInt("spawner_count")) {
 			throw new Exception("Invalid spawner_count");
 		} else if (!config.isString("scripted_quests_component")) {
@@ -46,8 +45,8 @@ public class SpawnerBreakTrigger {
 
 	}
 
-	public SpawnerBreakTrigger(Plugin plugin, int spawnerCount, int spawnerCountRemaining,
-	                           String questComponentStr) throws Exception {
+	public SpawnerBreakTrigger(StructurePlugin plugin, int spawnerCount, int spawnerCountRemaining,
+                               String questComponentStr) throws Exception {
 		mScriptedQuestsPlugin = (com.playmonumenta.scriptedquests.Plugin)Bukkit.getPluginManager().getPlugin("ScriptedQuests");
 		if (mScriptedQuestsPlugin == null) {
 			throw new Exception("ScriptedQuests is not present!");

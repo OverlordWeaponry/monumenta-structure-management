@@ -2,7 +2,7 @@ package com.playmonumenta.epicstructures.commands;
 
 import java.util.LinkedHashMap;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -14,7 +14,7 @@ import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 
 public class SetRespawnTimer {
-	public static void register(Plugin plugin) {
+	public static void register(StructurePlugin plugin) {
 		/* First one of these includes coordinate arguments */
 		LinkedHashMap<String, Argument> arguments = new LinkedHashMap<>();
 
@@ -29,7 +29,7 @@ public class SetRespawnTimer {
 			.register();
 	}
 
-	private static void setTimer(CommandSender sender, Plugin plugin, String label, int ticks) {
+	private static void setTimer(CommandSender sender, StructurePlugin plugin, String label, int ticks) {
 		if (plugin.mRespawnManager == null) {
 			return;
 		}

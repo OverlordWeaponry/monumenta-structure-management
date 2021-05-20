@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
@@ -24,7 +24,7 @@ import dev.jorel.commandapi.wrappers.Location2D;
 import net.md_5.bungee.api.ChatColor;
 
 public class ForceloadLazy {
-	public static void register(Plugin plugin) {
+	public static void register(StructurePlugin plugin) {
 		final CommandPermission perms = CommandPermission.fromString("epicstructures.forceloadlazy");
 
 		/* First one of these includes coordinate arguments */
@@ -49,7 +49,7 @@ public class ForceloadLazy {
 			.register();
 	}
 
-	private static void load(CommandSender sender, Plugin plugin, Location2D from, Location2D to) throws WrapperCommandSyntaxException {
+	private static void load(CommandSender sender, StructurePlugin plugin, Location2D from, Location2D to) throws WrapperCommandSyntaxException {
 		CuboidRegion region = new CuboidRegion(BlockVector3.at(from.getBlockX(), 0, from.getBlockZ()), BlockVector3.at(to.getBlockX(), 255, to.getBlockZ()));
 		final Set<BlockVector2> chunks = region.getChunks();
 

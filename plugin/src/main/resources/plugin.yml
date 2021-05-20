@@ -1,5 +1,5 @@
 name: EpicStructureManagement
-main: com.playmonumenta.epicstructures.Plugin
+main: com.playmonumenta.epicstructures.StructurePlugin
 version: 1.0
 api-version: 1.15
 depend: [ScriptedQuests]

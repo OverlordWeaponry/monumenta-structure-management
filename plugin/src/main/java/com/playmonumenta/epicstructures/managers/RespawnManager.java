@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 import com.playmonumenta.scriptedquests.zones.ZoneManager;
 import com.playmonumenta.scriptedquests.zones.ZoneLayer;
 import com.playmonumenta.scriptedquests.zones.Zone;
@@ -31,7 +31,7 @@ public class RespawnManager {
 	public static final String ZONE_LAYER_NAME_INSIDE = "Respawning Structures Inside";
 	public static final String ZONE_LAYER_NAME_NEARBY = "Respawning Structures Nearby";
 
-	private final Plugin mPlugin;
+	private final StructurePlugin mPlugin;
 	private final World mWorld;
 	protected final ZoneManager mZoneManager;
 
@@ -52,7 +52,7 @@ public class RespawnManager {
 	protected ZoneLayer mZoneLayerNearby = new ZoneLayer(ZONE_LAYER_NAME_NEARBY, true);
 	private Map<Zone, RespawningStructure> mStructuresByZone = new LinkedHashMap<Zone, RespawningStructure>();
 
-	public RespawnManager(Plugin plugin, World world, YamlConfiguration config) {
+	public RespawnManager(StructurePlugin plugin, World world, YamlConfiguration config) {
 		mPlugin = plugin;
 		mWorld = world;
 

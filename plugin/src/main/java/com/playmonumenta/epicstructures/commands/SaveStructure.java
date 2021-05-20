@@ -1,21 +1,24 @@
 package com.playmonumenta.epicstructures.commands;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 import com.playmonumenta.epicstructures.utils.CommandUtils;
 import com.playmonumenta.epicstructures.utils.MessagingUtils;
 import com.sk89q.worldedit.math.BlockVector3;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class SaveStructure implements CommandExecutor {
-	Plugin mPlugin;
+	StructurePlugin mPlugin;
 	org.bukkit.World mWorld;
 
-	public SaveStructure(Plugin plugin, org.bukkit.World world) {
+	public SaveStructure(StructurePlugin plugin, org.bukkit.World world) {
 		mPlugin = plugin;
 		mWorld = world;
 	}
@@ -36,8 +39,16 @@ public class SaveStructure implements CommandExecutor {
 		BlockVector3 minpos;
 		BlockVector3 maxpos;
 		try {
-			Location loc1 = CommandUtils.parseLocationFromString(sender, mWorld, arg3[1], arg3[2], arg3[3]);
-			Location loc2 = CommandUtils.parseLocationFromString(sender, mWorld, arg3[4], arg3[5], arg3[6]);
+			World world = mWorld;
+			if (sender instanceof BlockCommandSender) {
+				BlockCommandSender blockSender = (BlockCommandSender) sender;
+				world = blockSender.getBlock().getWorld();
+			} else if (sender instanceof Player) {
+				world = ((Player) sender).getWorld();
+			}
+
+			Location loc1 = CommandUtils.parseLocationFromString(sender, world, arg3[1], arg3[2], arg3[3]);
+			Location loc2 = CommandUtils.parseLocationFromString(sender, world, arg3[4], arg3[5], arg3[6]);
 
 			BlockVector3 pos1 = BlockVector3.at(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ());
 			BlockVector3 pos2 = BlockVector3.at(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ());

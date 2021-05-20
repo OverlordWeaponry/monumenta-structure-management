@@ -2,7 +2,7 @@ package com.playmonumenta.epicstructures.commands;
 
 import java.util.LinkedHashMap;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 import com.playmonumenta.epicstructures.utils.CommandUtils;
 
 import org.bukkit.ChatColor;
@@ -16,7 +16,7 @@ import dev.jorel.commandapi.arguments.TextArgument;
 import dev.jorel.commandapi.exceptions.WrapperCommandSyntaxException;
 
 public class ActivateSpecialStructure {
-	public static void register(Plugin plugin) {
+	public static void register(StructurePlugin plugin) {
 		final String command = "activatespecialstructure";
 		final CommandPermission perms = CommandPermission.fromString("epicstructures");
 
@@ -42,7 +42,7 @@ public class ActivateSpecialStructure {
 			.register();
 	}
 
-	private static void activate(CommandSender sender, Plugin plugin, String label, String path) throws WrapperCommandSyntaxException {
+	private static void activate(CommandSender sender, StructurePlugin plugin, String label, String path) throws WrapperCommandSyntaxException {
 		CommandUtils.getAndValidateSchematicPath(plugin, path, true);
 
 		if (plugin.mRespawnManager == null) {

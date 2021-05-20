@@ -1,6 +1,6 @@
 package com.playmonumenta.epicstructures.commands;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -8,9 +8,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 public class ReloadStructures implements CommandExecutor {
-	Plugin mPlugin;
+	StructurePlugin mPlugin;
 
-	public ReloadStructures(Plugin plugin) {
+	public ReloadStructures(StructurePlugin plugin) {
 		mPlugin = plugin;
 	}
 

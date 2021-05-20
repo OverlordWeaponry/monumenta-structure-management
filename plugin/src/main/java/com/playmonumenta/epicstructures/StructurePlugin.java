@@ -27,7 +27,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Plugin extends JavaPlugin {
+public class StructurePlugin extends JavaPlugin {
 	public World mWorld;
 	public StructureManager mStructureManager;
 
@@ -36,6 +36,12 @@ public class Plugin extends JavaPlugin {
 	private File mConfigFile;
 	private YamlConfiguration mConfig;
 	private boolean mUseStructureCache;
+
+	private static StructurePlugin instance;
+
+	public static StructurePlugin getInstance() {
+		return instance;
+	}
 
 	@Override
 	public void onLoad() {
@@ -53,6 +59,7 @@ public class Plugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		instance = this;
 		mWorld = Bukkit.getWorlds().get(0);
 
 		getCommand("SaveStructure").setExecutor(new SaveStructure(this, mWorld));

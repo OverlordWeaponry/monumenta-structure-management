@@ -1,8 +1,6 @@
 package com.playmonumenta.epicstructures.utils;
 
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -17,15 +15,13 @@ import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldedit.world.block.BlockTypes;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.BrewingStand;
@@ -45,22 +41,59 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 public class StructureUtils {
-	// Ignores structure void, leaving the original block in place
+
+	private static final HashMap<Long, Integer> CHUNK_TICKET_REFERENCE_COUNT = new HashMap<>();
+
 	public static void paste(final Plugin plugin, final BlockArrayClipboard clipboard, final World world, final BlockVector3 to, final boolean includeEntities) {
+		paste(plugin, clipboard, world, to, includeEntities, 0);
+	}
+
+	// Ignores structure void, leaving the original block in place
+	public static void paste(final Plugin plugin, final BlockArrayClipboard clipboard, final World world,
+							 final BlockVector3 to, final boolean includeEntities, float rotation) {
+		paste(plugin, clipboard, world, to, includeEntities, rotation, null);
+	}
+
+	// Ignores structure void, leaving the original block in place
+	public static void paste(final Plugin plugin, final BlockArrayClipboard clipboard, final World world,
+							 final BlockVector3 to, final boolean includeEntities, float rotation, Runnable runnable) {
+		paste(plugin, clipboard, world, to, includeEntities, rotation, true, runnable);
+	}
+
+		// Ignores structure void, leaving the original block in place
+	public static void paste(final Plugin plugin, final BlockArrayClipboard clipboard, final World world,
+							 final BlockVector3 to, final boolean includeEntities, float rotation, boolean cleanLight, Runnable runnable) {
 
 		final long initialTime = System.currentTimeMillis(); // <-- START
 
 		final Region sourceRegion = clipboard.getRegion();
+
 		final BlockVector3 size = sourceRegion.getMaximumPoint().subtract(sourceRegion.getMinimumPoint());
 		final Vector pos1 = new Vector((double)to.getX(), (double)to.getY(), (double)to.getZ());
-		final Vector pos2 = pos1.clone().add(new Vector(size.getX() + 1, size.getY() + 1, size.getZ() + 1));
+		final Vector pos2 = VectorUtils.rotateYAxis(pos1.clone().add(new Vector(size.getX() + 1, size.getY() + 1, size.getZ() + 1)), rotation);
 		final BoundingBox box = new BoundingBox(pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(), pos2.getZ());
 
 		final Region shiftedRegion = clipboard.getRegion().clone();
 		shiftedRegion.shift(to);
 
-		final Set<BlockVector2> chunks = shiftedRegion.getChunks();
-		final AtomicInteger numRemaining = new AtomicInteger(chunks.size());
+		BlockVector3 maxVector = sourceRegion.getMaximumPoint();
+		Vector axisedVector = new Vector(maxVector.getX(), maxVector.getY(), maxVector.getZ());
+		if (rotation == 90) {
+			axisedVector = VectorUtils.rotateYAxis(axisedVector, 270);
+		} else if (rotation == 270) {
+			axisedVector = VectorUtils.rotateYAxis(axisedVector, 90);
+		} else {
+			axisedVector = VectorUtils.rotateYAxis(axisedVector, rotation);
+		}
+		BlockVector3 axisedCorner = BlockVector3.at(axisedVector.getX(), axisedVector.getY(), axisedVector.getZ());
+
+		CuboidRegion cuboidRegion = new CuboidRegion(sourceRegion.getMinimumPoint(), axisedCorner);
+		cuboidRegion.shift(to);
+		System.out.println(cuboidRegion.getMinimumPoint() + " " + cuboidRegion.getMaximumPoint());
+
+		final Set<BlockVector2> cuboidChunks = cuboidRegion.getChunks();
+
+		final AtomicInteger numRemaining = new AtomicInteger(cuboidChunks.size());
 
 		/* Set of positions (relative to the clipboard / origin) that should not be overwritten when pasting */
 		final Set<Long> noLoadPositions = new HashSet<>();
@@ -68,6 +101,22 @@ public class StructureUtils {
 		/* This chunk consumer removes entities and sets spawners/brewstands/furnaces to air */
 		final Consumer<Chunk> chunkConsumer = (final Chunk chunk) -> {
 			numRemaining.decrementAndGet();
+			Long key = chunk.getChunkKey();
+
+			/*
+			 * Mark this chunk so it will stay loaded. Keep a reference count so chunks definitely stay loaded, even when
+			 * multiple overlapping structures are pasted simultaneously
+			 */
+			Integer references = CHUNK_TICKET_REFERENCE_COUNT.get(key);
+			if (references == null || references == 0) {
+				references = 1;
+				if (!chunk.addPluginChunkTicket(plugin)) {
+					plugin.getLogger().warning("BUG: Plugin already has chunk ticket for " + chunk.getX() + "," + chunk.getZ());
+				}
+			} else {
+				references += 1;
+			}
+			CHUNK_TICKET_REFERENCE_COUNT.put(key, references);
 			for (final BlockState state : chunk.getTileEntities(true)) {
 				if (state instanceof CreatureSpawner || state instanceof BrewingStand || state instanceof Furnace || state instanceof Chest || state instanceof ShulkerBox) {
 					final org.bukkit.Location loc = state.getLocation();
@@ -102,6 +151,7 @@ public class StructureUtils {
 				}
 			}
 
+
 			if (includeEntities) {
 				for (final Entity entity : chunk.getEntities()) {
 					if (box.contains(entity.getLocation().toVector()) && entityShouldBeRemoved(entity)) {
@@ -112,11 +162,12 @@ public class StructureUtils {
 					}
 				}
 			}
+
 		};
 
 		/* Load all the chunks in the region and run the chunk consumer */
-		for (final BlockVector2 chunkCoords : shiftedRegion.getChunks()) {
-			world.getChunkAtAsync(chunkCoords.getX(), chunkCoords.getZ(), chunkConsumer);
+		for (final BlockVector2 chunkCoords : cuboidChunks) {
+			world.getChunkAtAsync(chunkCoords.getBlockX(), chunkCoords.getBlockZ(), chunkConsumer);
 		}
 
 		new BukkitRunnable() {
@@ -168,16 +219,22 @@ public class StructureUtils {
 
 
 							final ForwardExtentCopy copy = new ForwardExtentCopy(clipboard, clipboard.getRegion(), clipboard.getOrigin(), extent, to);
+							// Rotates it
+							AffineTransform transform = new AffineTransform()
+								.rotateY(rotation);
+							copy.setTransform(transform);
+
 							copy.setCopyingBiomes(false);
 							copy.setFilterFunction(filterFunction);
 							copy.setCopyingEntities(includeEntities);
+
 							Operations.completeBlindly(copy);
 						}
 						plugin.getLogger().info("Loading structure took " + Long.toString(System.currentTimeMillis() - pasteTime) + " milliseconds (async)"); // STOP -->
 
 						/* Schedule light cleaning on the main thread so it can safely check plugin enabled status */
 						Bukkit.getScheduler().runTask(plugin, () -> {
-							if (!Bukkit.getPluginManager().isPluginEnabled("LightCleaner")) {
+							if (!cleanLight || !Bukkit.getPluginManager().isPluginEnabled("LightCleaner")) {
 								return;
 							}
 
@@ -189,10 +246,39 @@ public class StructureUtils {
 							for (final BlockVector2 chunk : lightingChunks) {
 								lightCleanerChunks.add(chunk.getX(), chunk.getZ());
 							}
-							LightingService.schedule(world, lightCleanerChunks);
+							LightingService.ScheduleArguments args = new LightingService.ScheduleArguments();
+							args.setWorld(world);
+							args.setChunks(lightCleanerChunks);
+							args.setLoadedChunksOnly(true);
+							LightingService.schedule(args);
 
-							plugin.getLogger().info("scheduleLighting took " + Long.toString(System.currentTimeMillis() - lightTime) + " milliseconds (async)"); // STOP -->
+							plugin.getLogger().info("scheduleLighting took " + Long.toString(System.currentTimeMillis() - lightTime) + " milliseconds (main thread)"); // STOP -->
+
+							/* 10s later, unmark all chunks as force loaded */
+							Bukkit.getScheduler().runTaskLater(plugin, () -> {
+								final Consumer<Chunk> chunkConsumer = (final Chunk chunk) -> {
+									Long key = chunk.getChunkKey();
+									Integer references = CHUNK_TICKET_REFERENCE_COUNT.remove(key);
+									if (references == null || references <= 0) {
+										plugin.getLogger().warning("BUG: Chunk reference was cleared before it should have been: " + chunk.getX() + "," + chunk.getZ());
+									} else if (references == 1) {
+										if (!chunk.removePluginChunkTicket(plugin)) {
+											plugin.getLogger().warning("BUG: Chunk ticket was already removed: " + chunk.getX() + "," + chunk.getZ());
+										}
+									} else {
+										CHUNK_TICKET_REFERENCE_COUNT.put(key, references - 1);
+									}
+								};
+								for (final BlockVector2 chunkCoords : cuboidChunks) {
+									world.getChunkAtAsync(chunkCoords.getBlockX(), chunkCoords.getBlockZ(), chunkConsumer);
+								}
+							}, 200);
 						});
+
+						if (runnable != null) {
+							Bukkit.getScheduler().runTask(plugin, runnable);
+						}
+
 					});
 				}
 			}

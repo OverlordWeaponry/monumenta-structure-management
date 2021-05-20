@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import com.playmonumenta.epicstructures.Plugin;
+import com.playmonumenta.epicstructures.StructurePlugin;
 import com.playmonumenta.epicstructures.utils.StructureUtils;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -44,7 +44,7 @@ public class RespawningStructure implements Comparable<RespawningStructure> {
 		}
 	}
 
-	private Plugin mPlugin;
+	private StructurePlugin mPlugin;
 	private World mWorld;
 	private Random mRandom;
 
@@ -75,8 +75,8 @@ public class RespawningStructure implements Comparable<RespawningStructure> {
 		return mConfigLabel.compareTo(other.mConfigLabel);
 	}
 
-	public static RespawningStructure fromConfig(Plugin plugin, World world, String configLabel,
-	        ConfigurationSection config) throws Exception {
+	public static RespawningStructure fromConfig(StructurePlugin plugin, World world, String configLabel,
+                                                 ConfigurationSection config) throws Exception {
 		if (!config.isString("name")) {
 			throw new Exception("Invalid name");
 		} else if (!config.isList("structure_paths")) {
@@ -123,11 +123,11 @@ public class RespawningStructure implements Comparable<RespawningStructure> {
 		                               postRespawnCommand, specialPaths, nextRespawnPath, spawnerBreakTrigger);
 	}
 
-	public RespawningStructure(Plugin plugin, World world, int extraRadius,
-		                       String configLabel, String name, List<String> genericPaths,
-		                       Vector loadPos, int respawnTime, int ticksLeft,
-		                       String postRespawnCommand, List<String> specialPaths,
-		                       String nextRespawnPath, SpawnerBreakTrigger spawnerBreakTrigger) throws Exception {
+	public RespawningStructure(StructurePlugin plugin, World world, int extraRadius,
+                               String configLabel, String name, List<String> genericPaths,
+                               Vector loadPos, int respawnTime, int ticksLeft,
+                               String postRespawnCommand, List<String> specialPaths,
+                               String nextRespawnPath, SpawnerBreakTrigger spawnerBreakTrigger) throws Exception {
 		mPlugin = plugin;
 		mWorld = world;
 		mRandom = new Random();
